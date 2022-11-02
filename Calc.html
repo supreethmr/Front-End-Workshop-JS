@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <title>Calculator</title>
+        <style>
+            .calculator__keys {
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                padding-top: 10px;
+            }
+
+            .calculator__keys > div button {
+                margin: 2px;
+            }
+            .calculator__display {
+                border: 2px solid #242324;
+                padding: 5px;
+                width: 100px;
+
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <p>
+              This component works exactly like the calculator you know. Click any number to start calculating!
+            </p>
+            <div class="calculator">
+              <div class="calculator__display">0</div>
+        
+              <div class="calculator__keys">
+                <div>
+                    <button>7</button>
+                    <button>8</button>
+                    <button>9</button>
+                </div>
+                <div>
+                    <button>4</button>
+                    <button>5</button>
+                    <button>6</button>
+                </div>
+                <div>
+                    <button>1</button>
+                    <button>2</button>
+                    <button>3</button>
+                </div>
+                <div>
+                    <button>0</button>
+                    <button class="clear">AC</button>
+                    <button class="key__add" id="add">+</button>
+                    <button class="key__equal" id="calculate">=</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <script>
+                const calculator = document.querySelector('.calculator');
+                const keys = calculator.querySelector('.calculator__keys');
+                const display = document.querySelector('.calculator__display');
+                
+                const calculate = (expA, expB, operator) => {
+                    let result;
+                    switch(operator) {
+                        case '+':
+                            result = expA + expB;
+                            break;
+                        default:
+                            result = 'NaN';
+                            break;
+                    }
+                    return result;
+                }
+
+                keys.addEventListener('click', e => {
+                    const key = e.target;
+                    const displayedNum = display.textContent;
+                    const keyContent = key.textContent;
+
+                    if (e.target.matches('button')) {
+                        if (!key.getAttribute('class')) { // numeric buttons don't have class attribute. below block adds numbers to display
+                            if (displayedNum === '0') {
+                                display.textContent = keyContent;
+                            } else {
+                                display.textContent = displayedNum + keyContent;
+                            }
+                        } else if (key.getAttribute('class') === 'key__add') { // if button pressed contains class 'add' then update '+' operator to display
+                            if (!displayedNum.includes('+') && displayedNum !== '') {
+                                display.textContent = displayedNum + keyContent;
+                            }
+                        } else if (key.getAttribute('class') === 'clear') {
+                            display.textContent = 0;
+                        } else if (key.getAttribute('class') === 'key__equal') { // perform calucaltion only when displayed value includes operator and numeric digits.
+                            if (displayedNum.includes('+')) {
+                                const expA = parseInt(displayedNum.substring(0, displayedNum.indexOf('+')));
+                                const expB = parseInt(displayedNum.substring(displayedNum.indexOf('+') + 1, displayedNum.length));
+                                if (expA !== NaN && expB !== NaN) {
+                                    display.textContent = calculate(expA, expB, '+');
+                                }
+                            }
+                        }
+                    }
+                })
+          </script>
+    </body>
+</html>
